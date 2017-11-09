@@ -1,0 +1,82 @@
+.pic-title {
+    color: #ffffff;
+    overflow:hidden; 
+    width: 70%;
+    height:40%;
+}
+
+.pic-content {
+    color: #ffffff;
+    overflow:hidden; 
+    text-overflow:ellipsis;
+    width:70%;
+    height:60%
+}
+
+.pic-div {
+    width: 22%;
+    position: absolute;
+    text-align: center;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+html {
+    background: #f8cd48;
+}
+#section1
+{
+    background: linear-gradient(#42caf2,#5149f8);
+}
+#section2
+{
+    background: linear-gradient(#5149f8,#8e47f8);
+}
+#section3
+{
+    background: linear-gradient(#8e47f8,#dd48f8);
+}
+#section4
+{
+    background: linear-gradient(#dd48f8,#f8489b);
+}
+#section5
+{
+    background: linear-gradient(#f8489b,#f84848);
+}
+#section6
+{
+    background: linear-gradient(#f84848,#f87e48);
+}
+#section7
+{
+    background: linear-gradient(#f87e48,#f8cd48);
+}
+
+.dask{
+    width: 100%;
+    background: rgba(0, 0, 0, 0.57);
+    opacity: 0;
+    text-align: left;
+    position: absolute;
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    left: auto;
+}
+
+
+.pic-title {
+    margin-left: 10%;
+}
+ .pic-content {
+     margin-left: 5%;
+ }
+
+.img-left-title {
+    margin-left: 8%;
+    width: 6%;
+    height: auto;
+ }
+
+.change-content {
+    color: #ffffff;
+    font-size: 300%;
+}

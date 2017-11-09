@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+{% if not conn_db %}
+<h1>ERROR:未找到数据库文件</h1>
+<h2>解决方案：</h2>
+<dl>
+    <dt>1.未运行python脚本</dt>
+    <dd>在文件中找到 并运行</dd>
+    <dt>2.未建立/db文件夹</dt>
+    <dd>在根目录下新建文件夹 并命名为 db</dd>
+</dl>
+
+{% else %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="static/stylesheets9/style.css" rel="stylesheet" type="text/css">
+    <!-- 引入css -->
+    <link rel="stylesheet" type="text/css" href="static/css/jquery.fullPage.css" />
+    <!-- fullpage.js依赖于jquery库 -->
+    <script type="text/javascript" src="static/js2/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="static/js2/jquery.fullPage.js"></script>
+    <script type="text/javascript" src="static/js2/my3.js"></script>
+    <title>News_Hub</title>
+</head>
+<body>
+    <div id="ido">
+        {% for articles in pages %}
+	{% set out_loop = loop %}
+        {% if loop.index == 1 %}
+        <div class="section active" id={{"section"~loop.index}}>
+            {% else %}
+            <div class="section" id={{"section"~loop.index}}>
+                {% endif %}
+                <img class="img-left-title" src={{"static/images/"~loop.index~".png"}} >
+                <div class="containerD">
+                    {% for article in articles %}
+                    {% if out_loop.index == 1 %}
+                    <div class="pic-div" id={{"pic"~loop.index~"-div"}}>
+                        {% else %}
+                        <div class="pic-div" id={{"pic"~(out_loop.index-1)~loop.index~"-div"}}>
+                            {% endif %}
+                            <a href={{article.link}}>
+                                <div class="dask">
+                                    <h2 class="pic-title">{{article.title | truncate(22, True)}}</h2>
+                                    <p class="pic-content">{{article.abstract | truncate(48, True) }}</p>
+                                </div>
+                                {% if (article.link_img == "NULL") or (article.link_img == "Null") %}
+                                <img class="pic-reponsive" src={{"static/images/portfolio-"~loop.index~".jpg"}} />
+                                {% else %}
+                                <img class="pic-reponsive" src={{article.link_img}} />
+                                {% endif %}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+</body>
+</html>
+{% endif %}
