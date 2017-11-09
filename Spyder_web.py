@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[9]:
+# In[ ]:
 
 # -*- coding: <utf-8> -*-
 import requests
@@ -12,6 +12,33 @@ import webbrowser
 import sqlite3
 import os
 import time
+import urllib
+from urllib.request import urlopen
+
+def spyder_pic(index,i,title):
+    search = urllib.parse.quote(title)
+    url = 'http://image.baidu.com/search/avatarjson?tn=resultjsonavatarnew&ie=utf-8&word=' + search + '&cg=girl&pn=1&rn=60&itg=0&z=0&fr=&width=&height=&lm=-1&ic=0&s=0&st=-1&gsm=1e0000001e'
+    req = urllib.request.Request(url=url, headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'})
+    page = urllib.request.urlopen(req)
+    rsp = page.read().decode('unicode_escape')
+    rsp_data = json.loads(rsp)
+    for image_info in rsp_data['imgs']:
+        #print(image_info['objURL'])
+        if(image_info['objURL'][9:17]=='hiphotos' or image_info['objURL'][7:11]=='icon' or image_info['objURL'][11:17]=='renwen' or image_info['objURL'][9:13]=='dimg'):
+            continue
+        r = urllib.request.Request(url=image_info['objURL'],headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'})
+        try:
+            resp=urlopen(r)
+            code=resp.getcode()
+            if(code==403 or code==503 or code==502 or code == 404):
+                continue
+            else:
+                add_img(index,i,image_info['objURL'])
+                break
+        except Exception:
+            continue
+    page.close()
+
 while True:
     ### index:
     #0：科技 1：运动 2：社科 3：娱乐 4：食物 5：摄影 6：生活方式 7：学科 8：文学
@@ -169,8 +196,11 @@ while True:
             for n in news_titles:
                 i = i+1
                 title = n.get_text(strip=True)
+                
                 link = "http://www.zhihu.com"+n.get("href")
                 insert_to_db(index,i,title,link)
+                spyder_pic(index,i,title)
+                #print("爬取一张图")
                 #data = {
                 #    '标题':title,
                 #    '链接':link,
@@ -217,11 +247,13 @@ while True:
                         else:
                             abstract = 'NULL'
                         link = 'http://www.toutiao.com'+n['source_url']
+                        insert_to_db(index,i,title,link,"NULL",abstract)
                         if 'image_url' in n:
                             link_img = n['image_url']
+                            add_img(index,i,link_img)
                         else:
-                            abstract = 'NULL'
-                        insert_to_db(index,i,title,link,link_img,abstract)
+                            spyder_pic(index,i,title)
+                        
         
         # 果壳网爬取
         
@@ -249,7 +281,9 @@ while True:
             i = i+1
             title = n.get_text()
             link = n.get("href")
+            
             insert_to_db(index,i,title,link)
+            spyder_pic(index,i,title)
             #data = {
             #    '标题':title,
             #    '链接':link,
@@ -286,8 +320,10 @@ while True:
             for n in news_titles:
                 i = i+1
                 title = n.get('title')
+                
                 link = 'http://www.nationalgeographic.com.cn'+n.get('href')
                 insert_to_db(index,i,title,link)
+                spyder_pic(index,i,title)
             i=j
             for n in news_abs:
                 i = i+1
@@ -324,7 +360,7 @@ while True:
         
         news_titles = soup.select('div .content > a')
         news_abs = soup.select('div .content > p')
-        news_img = soup.select('div #list-container > ul > li > a > img')
+        img_url = soup.select('div #list-container > ul > li')
         
         j=i
         for n in news_titles:
@@ -338,11 +374,14 @@ while True:
             abstract = n.get_text(strip=True)
             add_abstract(index,i,abstract)
         i=j
-        for n in news_img:
+        for n in img_url:
             i = i+1
-            link_img = n.get('src')
-            add_img(index,i,link_img)
-    
+            if n.get('class')[0] == 'have-img':
+                m = n.select('a > img')
+                link_img = m[0].get('src')
+                add_img(index,i,link_img)
+            else:
+                spyder_pic(index,i,title)
     
         id = ['科技', '运动', '娱乐', '社科', '摄影', '美食', '文学']
         print(id[index]+" Operation done successfully");
