@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 {% if not conn_db %}
 <h1>ERROR:未找到数据库文件</h1>
 <h2>解决方案：</h2>
@@ -13,50 +13,72 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="static/stylesheets9/style.css" rel="stylesheet" type="text/css">
-    <!-- 引入css -->
+    <title>News Hub</title>
+
+    <!--引入css和jquery库-->
     <link rel="stylesheet" type="text/css" href="static/css/jquery.fullPage.css" />
-    <!-- fullpage.js依赖于jquery库 -->
-    <script type="text/javascript" src="static/js2/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="static/js2/jquery.fullPage.js"></script>
-    <script type="text/javascript" src="static/js2/my3.js"></script>
-    <title>News_Hub</title>
+    <link rel="stylesheet" type="text/css" href="static/stylesheets/myStyle.css" />
+    <script type="text/javascript" src="static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="static/js/jquery.fullPage.js"></script>
+    <script type="text/javascript" src="static/js/jquery.flipping_text.js"></script>
+    <script type="text/javascript" src="static/js/modernizr.js"></script>
+    <script type="text/javascript" src="static/js/my.js"></script>
 </head>
+
 <body>
-    <div id="ido">
-        {% for articles in pages %}
-	{% set out_loop = loop %}
-        {% if loop.index == 1 %}
-        <div class="section active" id={{"section"~loop.index}}>
-            {% else %}
-            <div class="section" id={{"section"~loop.index}}>
-                {% endif %}
-                <img class="img-left-title" src={{"static/images/"~loop.index~".png"}} >
-                <div class="containerD">
-                    {% for article in articles %}
-                    {% if out_loop.index == 1 %}
-                    <div class="pic-div" id={{"pic"~loop.index~"-div"}}>
+<ul id="menu">
+    <li data-menuanchor="firstPage" class="menuList"><a href="#firstPage">主页</a></li>
+    <li data-menuanchor="2thPage" class="menuList"><a href="#2thPage">科技</a></li>
+    <li data-menuanchor="3thPage" class="menuList"><a href="#3thPage">运动</a></li>
+    <li data-menuanchor="4thPage" class="menuList"><a href="#4thPage">娱乐</a></li>
+    <li data-menuanchor="5thPage" class="menuList"><a href="#5thPage">社科</a></li>
+    <li data-menuanchor="6thPage" class="menuList"><a href="#6thPage">摄影</a></li>
+    <li data-menuanchor="7thPage" class="menuList"><a href="#7thPage">美食</a></li>
+    <li data-menuanchor="8thPage" class="menuList"><a href="#8thPage">文学</a></li>
+</ul>
+
+<div id="ido">
+    <div class="section active" id="section0">
+        <div class="main">
+            <div class="page_container">
+                <div class="left_col">
+                    <h2 class="intro">欢迎来到News Hub</h1>
+                    <h3 data-delay="3000" class="intro">News Hub是由三位软件学院的学生设计并制作的一站式资讯阅读平台</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% for articles in pages %}
+    {% set out_loop = loop %}
+    <div class="section" id={{"section"~loop.index}}>
+        {% for article in articles %}
+        <div class="slide" id={{"slide"~loop.index}}>
+            <div class="myContainer">
+                <div class="pic-div" id={{"pic-div"~loop.index}}>
+                    <a href={{article.link}}>
+                        {% if (article.link_img == "NULL") or (article.link_img == "Null") %}
+                        <img class="pic-reponsive" src={{"static/images/portfolio-"~loop.index~".jpg"}} />
                         {% else %}
-                        <div class="pic-div" id={{"pic"~(out_loop.index-1)~loop.index~"-div"}}>
-                            {% endif %}
-                            <a href={{article.link}}>
-                                <div class="dask">
-                                    <h2 class="pic-title">{{article.title | truncate(22, True)}}</h2>
-                                    <p class="pic-content">{{article.abstract | truncate(48, True) }}</p>
-                                </div>
-                                {% if (article.link_img == "NULL") or (article.link_img == "Null") %}
-                                <img class="pic-reponsive" src={{"static/images/portfolio-"~loop.index~".jpg"}} />
-                                {% else %}
-                                <img class="pic-reponsive" src={{article.link_img}} />
-                                {% endif %}
-                            </a>
-                        </div>
-                        {% endfor %}
+                        <img class="pic-reponsive" src={{article.link_img}} />
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="article-div">
+                    <div class="article-title">
+                        <a href={{article.link}}>
+                            <h1 class="article-title">{{article.title | truncate(22, True)}}</h1>
+                        </a>
+                    </div>
+                    <div class="article-content-div">
+                        <p class="article-content">{{article.abstract | truncate(400, True)}}</p>
                     </div>
                 </div>
-                {% endfor %}
             </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
 </body>
 </html>
 {% endif %}

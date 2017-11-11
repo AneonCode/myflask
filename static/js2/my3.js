@@ -3,8 +3,10 @@ $(function() {
         {
             loopBottom: true,
             navigation: true,
-            easingcss3: 'cubic-bezier(0.175, 0.885, 0.320, 1.275)'
-
+            easingcss3: 'cubic-bezier(0.175, 0.885, 0.320, 1.275)',
+            sectionsColor: ['#1bbc9b', '#4BBFC3', '#7BAABE', 'whitesmoke', '#ccddff'],
+            anchors: ['firstPage', '2thPage', '3thPage', '4thpage', '5thpage', '6thpage', '7thpage', '8thpage'],
+            menu: "#menu"
         }
     );
 });

@@ -21,7 +21,7 @@ def spyder_pic(index,i,title):
     req = urllib.request.Request(url=url, headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'})
     page = urllib.request.urlopen(req)
     rsp = page.read().decode('unicode_escape')
-    rsp_data = json.loads(rsp)
+    rsp_data = json.loads(rsp, strict=False)
     for image_info in rsp_data['imgs']:
         #print(image_info['objURL'])
         if(image_info['objURL'][9:17]=='hiphotos' or image_info['objURL'][7:11]=='icon' or image_info['objURL'][11:17]=='renwen' or image_info['objURL'][9:13]=='dimg'):
@@ -184,7 +184,7 @@ while True:
         for h in index_zh[index]:
             url = 'https://www.zhihu.com/topic/'+h+'/hot'
             
-            wbdata = requests.get(url,headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'}).text
+            wbdata = requests.get(url,headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'}, stream=True).text
             
             soup = BeautifulSoup(wbdata,'lxml')
             #soup
@@ -232,9 +232,9 @@ while True:
                    ]
         for h in index_tt[index]:
             url = 'https://www.toutiao.com/api/pc/feed/?category=news_'+h+'&utm_source=toutiao&widen=1&max_behot_time=0&max_behot_time_tmp=0&tadrequire=true&as=A195094EFDC8F33&cp=59ED588F63F3DE1'
-            wbdata = requests.get(url).text
+            wbdata = requests.get(url, stream=True).text
             
-            data = json.loads(wbdata)
+            data = json.loads(wbdata, strict=False)
             news = data['data']
             
             for n in news:
@@ -268,7 +268,7 @@ while True:
         for h in index_gk[index]:
             url = 'http://www.guokr.com/ask/tag/'+h+'/'
             
-            wbdata = requests.get(url).content
+            wbdata = requests.get(url, stream=True).content
             
             soup = BeautifulSoup(wbdata,'lxml')
             
@@ -308,7 +308,7 @@ while True:
         for h in index_ng[index]:
             url = 'http://www.nationalgeographic.com.cn/'+h+'/'
             
-            wbdata = requests.get(url,headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'}).content
+            wbdata = requests.get(url,headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'}, stream=True).content
             
             soup = BeautifulSoup(wbdata,'lxml')
             
@@ -323,22 +323,21 @@ while True:
                 
                 link = 'http://www.nationalgeographic.com.cn'+n.get('href')
                 insert_to_db(index,i,title,link)
-                spyder_pic(index,i,title)
+                
             i=j
             for n in news_abs:
                 i = i+1
                 abstract = n.get_text(strip=True)
                 add_abstract(index,i,abstract)
             i=j
-            try:
-                for n in news_imgs:
+            for n in news_imgs:
+                try:
                     i = i+1
                     link_img = n.get('src')
-                    urllib.request.urlretrieve(link_img,'static/NG%s.jpg' %i)
-                    add_img(index,i,'static//images//NG%s.jpg'%i)
-            except BaseException:
-                print("图片访问结束")
-                i=i-1
+                    urllib.request.urlretrieve(link_img,'static/images/NG%s.jpg' %i)
+                    add_img(index,i,'static/images/NG%s.jpg'%i)
+                except BaseException:
+                    spyder_pic(index,i,title)
                 
         
             # 简书爬取
@@ -354,7 +353,7 @@ while True:
         for h in index_js[index]:
             url = 'http://www.jianshu.com/c/'+ h
             
-            wbdata = requests.get(url).content
+            wbdata = requests.get(url, stream=True).content
         
         soup = BeautifulSoup(wbdata,'lxml')
         
@@ -391,4 +390,9 @@ while True:
     conn.close()
     print('Sleeping...')
     time.sleep(43200)
+
+
+# In[ ]:
+
+
 
